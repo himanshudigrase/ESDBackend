@@ -19,6 +19,7 @@ public class EmployeeController  //extends HelloApplication
 
     @GET
     @Path("/get_all")
+
     @Produces(MediaType.APPLICATION_JSON)
     public Response get_all_employee() {
         List<Employee> emps = this.employeeDAO.getEmployeeList();

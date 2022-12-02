@@ -1,11 +1,13 @@
 package com.example.esd.DAO.Implement;
 
+import com.example.esd.Bean.Department;
 import com.example.esd.Bean.Employee;
 import com.example.esd.DAO.EmployeeDAO;
 import com.example.esd.Util.HibernateSessionUtil;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,19 +52,32 @@ public class EmployeeDAOImpl implements EmployeeDAO {
     @Override
     public Employee login(Employee emp) {
         try (Session session = HibernateSessionUtil.getSession();){
+        String sql1 = "select distinct d.departmentID FROM Department d where d.departmentName = :adminName";
+        Query query1 = session.createQuery(sql1);
+        query1.setParameter("adminName", "Admin");
+        List deptIdList = query1.list();
+        int adminId;
+        if(deptIdList.size() == 1){
+            adminId = ((int) deptIdList.get(0));
+            System.out.println(adminId + "admin's Id");
+        }else return null;
+
+     // ------------------------------------------------------------------
+
             String employeeEmail = emp.getEmail();
             System.out.print(employeeEmail);
             String employeePassword = emp.getPassword();
             System.out.print(employeePassword);
-           // Integer departmentId = emp.getDepartmentId();
-           // System.out.print(departmentId);
+            System.out.print(adminId);
+           // Integer employeedepartment = emp.getDepartment().getDepartmentID();
+          //  System.out.print(employeedepartment);
             List<Object> result = new ArrayList<Object>(
                     session.createQuery(
-                                    "FROM Employee WHERE email = :employeeEmail and password = :employeePassword "//andepartmentId = :departmentId"
+                                    "FROM Employee e WHERE e.email = :employeeEmail and e.password = :employeePassword   and e.department.departmentID = :adminId"
                             )
                             .setParameter("employeeEmail", employeeEmail)
                             .setParameter("employeePassword", employeePassword)
-             //               .setParameter("departmentId",departmentId)
+                            .setParameter("adminId",adminId)
                             .list()
             );
 

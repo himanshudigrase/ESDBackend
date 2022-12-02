@@ -4,7 +4,9 @@ import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "course")
@@ -39,8 +41,38 @@ public class Course implements Serializable {
     @JoinColumn(name = "course_faculty_id",nullable = false)
     private Employee faculty;
 
-    @OneToMany(mappedBy = "courseForID",fetch = FetchType.EAGER,cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
-    private List<CoursePrerequisite> coursePrerequisiteListForID;
+    public Course(Set<Course> preRequisiteList, Set<Course> parentCourseList) {
+        this.preRequisiteList = preRequisiteList;
+        this.parentCourseList = parentCourseList;
+    }
+
+    //    @OneToMany(mappedBy = "courseForID",fetch = FetchType.EAGER,cascade = {CascadeType.REMOVE,CascadeType.PERSIST})
+//    private List<CoursePrerequisite> coursePrerequisiteListForID;
+@ManyToMany(fetch = FetchType.EAGER, targetEntity = Course.class)
+@JoinTable(name = "course_prerequisite",
+        joinColumns = {@JoinColumn(name = "course_id")},
+        inverseJoinColumns = {@JoinColumn(name = "pre_id")})
+private Set<Course> preRequisiteList = new HashSet<>();
+
+    public Set<Course> getPreRequisiteList() {
+        return preRequisiteList;
+    }
+
+    public void setPreRequisiteList(Set<Course> preRequisiteList) {
+        this.preRequisiteList = preRequisiteList;
+    }
+
+    public Set<Course> getParentCourseList() {
+        return parentCourseList;
+    }
+
+    public void setParentCourseList(Set<Course> parentCourseList) {
+        this.parentCourseList = parentCourseList;
+    }
+
+    @JsonbTransient
+    @ManyToMany(mappedBy = "preRequisiteList")
+    private Set<Course> parentCourseList = new HashSet<>();
 
 
 
@@ -56,27 +88,27 @@ public class Course implements Serializable {
         this.faculty = faculty;
     }
 
-    public Course(int courseCode, String name, String description, int year, int term, int credits, int capacity, Employee faculty) {
-        this.courseCode = courseCode;
-        this.name = name;
-        this.description = description;
-        this.year = year;
-        this.term = term;
-        this.credits = credits;
-        this.capacity = capacity;
-        this.faculty = faculty;
-    }
+//    public Course(int courseCode, String name, String description, int year, int term, int credits, int capacity, Employee faculty) {
+//        this.courseCode = courseCode;
+//        this.name = name;
+//        this.description = description;
+//        this.year = year;
+//        this.term = term;
+//        this.credits = credits;
+//        this.capacity = capacity;
+//        this.faculty = faculty;
+//    }
 
     public Course() {
     }
 
-//    public int getCourseID() {
-//        return courseID;
-//    }
-//
-//    public void setCourseID(int courseID) {
-//        this.courseID = courseID;
-//    }
+    public int getCourseID() {
+        return courseID;
+    }
+
+    public void setCourseID(int courseID) {
+        this.courseID = courseID;
+    }
 
     public int getCourseCode() {
         return courseCode;

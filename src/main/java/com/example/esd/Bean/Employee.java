@@ -36,6 +36,7 @@ public class Employee implements Serializable {
     @JoinColumn(name = "department",nullable = false)
     private Department department;
 
+
     public Employee(int employeeID, String firstName, String lastName, String email, String title, String password, List<Course> courseList, Department department) {
         this.employeeID = employeeID;
         this.firstName = firstName;

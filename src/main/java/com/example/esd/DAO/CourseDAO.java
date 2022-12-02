@@ -9,9 +9,20 @@ public interface CourseDAO {
 
     List<Course> getCourseList();
 
-    boolean updateCourseName(int courseID, String updatedName);
-
-    boolean deleteCourse(int courseID);
-
     List<Course> getCourses(Integer s_id);
+
+    boolean deleteNew(int courseID);
+
+
+    // Update course
+    boolean updateCourse(Course course);
+
+//     List<Course> getCoursePrerequisites(Integer course_id);
+
+    //    public List<Course> getCoursePrerequisites(Integer course_id) {
+//        return null;
+//    }
+
+    // to get course prerequisites
+    List<Course> getCoursePrerequisites(int courseID);
 }
